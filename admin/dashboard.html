@@ -127,9 +127,26 @@
             </div>
           </div>
 
+          <!-- IMAGE DE COUVERTURE (NOUVEAU) -->
+          <div style="background: linear-gradient(135deg, #fff 0%, #f5f1e8 100%); padding: 1rem 1.2rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #c9a961;">
+            <h4 style="font-family: var(--font-display); font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem;">🖼️ Image de couverture (recommandé)</h4>
+            <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 0.8rem;">
+              Collez le lien Google Drive de la couverture du livre. Si laissé vide, les couleurs ci-dessous seront utilisées à la place.
+            </p>
+            <input 
+              type="url" 
+              id="cover-image-url" 
+              placeholder="https://drive.google.com/uc?export=download&id=..." 
+              oninput="updatePreview()"
+              style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem;" />
+            <small style="display: block; color: #888; margin-top: 0.4rem; font-size: 0.85rem;">
+              💡 Astuce : utilise le convertisseur de lien Google Drive (lien direct au format <code>uc?export=download&id=...</code>)
+            </small>
+          </div>
+
           <!-- COULEURS COUVERTURE -->
           <div style="background: var(--cream); padding: 1rem 1.2rem; border-radius: 8px; margin-bottom: 1.2rem;">
-            <h4 style="font-family: var(--font-display); font-size: 1rem; font-weight: 500; margin-bottom: 0.8rem;">🎨 Couleurs de la couverture</h4>
+            <h4 style="font-family: var(--font-display); font-size: 1rem; font-weight: 500; margin-bottom: 0.8rem;">🎨 Couleurs de la couverture <span style="font-size: 0.8rem; color: var(--gray); font-weight: 400;">(utilisées seulement si pas d'image)</span></h4>
 
             <div style="display: grid; grid-template-columns: 180px 1fr; gap: 1.2rem; align-items: start;">
               <div class="cover-preview" id="cover-preview">
@@ -218,16 +235,13 @@
                 <textarea id="desc-fr"></textarea>
               </div>
               <div class="form-group">
-                <label>Lien du PDF (Google Drive, Dropbox...)</label>
-                <input 
-                  type="url" 
-                  id="pdf-link-fr" 
-                  placeholder="https://drive.google.com/file/d/..." 
-                  oninput="handlePdfLinkChange('fr')"
-                  style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem;" />
-                <small style="display: block; color: #888; margin-top: 0.4rem; font-size: 0.85rem;">
-                  📌 Collez ici le lien de partage Google Drive, Dropbox, OneDrive ou autre
-                </small>
+                <label>Fichier PDF (optionnel)</label>
+                <label class="file-upload" for="pdf-fr">
+                  <span class="file-upload-icon">📄</span>
+                  <strong>Cliquez pour sélectionner</strong>
+                  <div class="file-upload-info">PDF, max 50 MB</div>
+                  <input type="file" id="pdf-fr" accept="application/pdf" onchange="handlePdfSelect('fr')" />
+                </label>
                 <div class="file-name-display" id="pdf-name-fr"></div>
               </div>
             </div>
@@ -266,16 +280,13 @@
                 <textarea id="desc-en"></textarea>
               </div>
               <div class="form-group">
-                <label>PDF link (Google Drive, Dropbox...)</label>
-                <input 
-                  type="url" 
-                  id="pdf-link-en" 
-                  placeholder="https://drive.google.com/file/d/..." 
-                  oninput="handlePdfLinkChange('en')"
-                  style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem;" />
-                <small style="display: block; color: #888; margin-top: 0.4rem; font-size: 0.85rem;">
-                  📌 Paste your Google Drive, Dropbox, OneDrive or other sharing link
-                </small>
+                <label>PDF file (optional)</label>
+                <label class="file-upload" for="pdf-en">
+                  <span class="file-upload-icon">📄</span>
+                  <strong>Click to select</strong>
+                  <div class="file-upload-info">PDF, max 50 MB</div>
+                  <input type="file" id="pdf-en" accept="application/pdf" onchange="handlePdfSelect('en')" />
+                </label>
                 <div class="file-name-display" id="pdf-name-en"></div>
               </div>
             </div>
@@ -314,16 +325,13 @@
                 <textarea id="desc-es"></textarea>
               </div>
               <div class="form-group">
-                <label>Enlace del PDF (Google Drive, Dropbox...)</label>
-                <input 
-                  type="url" 
-                  id="pdf-link-es" 
-                  placeholder="https://drive.google.com/file/d/..." 
-                  oninput="handlePdfLinkChange('es')"
-                  style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95rem;" />
-                <small style="display: block; color: #888; margin-top: 0.4rem; font-size: 0.85rem;">
-                  📌 Pegue aquí el enlace de Google Drive, Dropbox, OneDrive u otro
-                </small>
+                <label>Archivo PDF (opcional)</label>
+                <label class="file-upload" for="pdf-es">
+                  <span class="file-upload-icon">📄</span>
+                  <strong>Haga clic para seleccionar</strong>
+                  <div class="file-upload-info">PDF, max 50 MB</div>
+                  <input type="file" id="pdf-es" accept="application/pdf" onchange="handlePdfSelect('es')" />
+                </label>
                 <div class="file-name-display" id="pdf-name-es"></div>
               </div>
             </div>
