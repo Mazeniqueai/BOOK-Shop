@@ -1,46 +1,38 @@
 // ============================================================
-// CONFIGURATION FIREBASE
+// CONFIGURATION FIREBASE — MAM++
 // ============================================================
-// Pour activer Firebase :
-// 1. Allez sur https://console.firebase.google.com
-// 2. Créez un projet (gratuit)
-// 3. Activez : Authentication > Email/Password
-// 4. Activez : Firestore Database (mode production)
-// 5. Activez : Storage (pour les PDFs)
-// 6. Settings > General > Your apps > Web app
-// 7. Copiez la config ci-dessous
+// Configuration de connexion au projet Firebase.
+// Les clés ci-dessous sont publiques par design (Firebase Web).
+// La sécurité est assurée par les règles Firestore et l'authentification.
 // ============================================================
-
 
 const FIREBASE_CONFIG = {
-  
+  apiKey: "AIzaSyC6zTeljJfWQxO7ap_kNgwDnNQQR1LM_F8",
+  authDomain: "mampluslibraries.firebaseapp.com",
+  projectId: "mampluslibraries",
+  storageBucket: "mampluslibraries.firebasestorage.app",
+  messagingSenderId: "54713670528",
+  appId: "1:54713670528:web:780c316c38937c646d7f65",
+  measurementId: "G-6X85K09P9S"
 };
 
-// Mode démo : si Firebase n'est pas configuré, on utilise le localStorage
-// Cela permet de tester l'admin sans configurer Firebase tout de suite
-const USE_FIREBASE = FIREBASE_CONFIG.apiKey !== "VOTRE_API_KEY_ICI";
+// Détection du mode : Firebase actif si les clés sont renseignées
+const USE_FIREBASE = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.length > 10;
 
 // ============================================================
-// ADMINS PAR DÉFAUT (mode démo - localStorage)
+// COMPTES ADMINISTRATEURS
 // ============================================================
-// Une fois Firebase activé, créez les comptes dans la console Firebase
-// Pour le mode démo, ces identifiants permettent de tester l'admin :
-const DEMO_ADMINS = [
-  {
-    email: "admin@mamplus.com",
-    password: "admin123",  // ⚠️ À changer impérativement en production
-    name: "Administrateur Principal",
-    role: "super_admin"
-  },
-  {
-    email: "manager@mamplus.com",
-    password: "manager123",
-    name: "Manager",
-    role: "admin"
-  }
-];
+// Les comptes admin sont gérés via la console Firebase Authentication.
+// Ce tableau reste vide pour la sécurité en production.
+// Pour ajouter un admin : Firebase Console > Authentication > Add user
+// ============================================================
 
-// Initialisation Firebase (si configuré)
+const DEMO_ADMINS = [];
+
+// ============================================================
+// INITIALISATION FIREBASE
+// ============================================================
+
 let firebaseApp = null;
 let auth = null;
 let db = null;
@@ -52,8 +44,8 @@ if (USE_FIREBASE && typeof firebase !== 'undefined') {
     auth = firebase.auth();
     db = firebase.firestore();
     storage = firebase.storage();
-    console.log('✓ Firebase initialisé');
+    console.log('Firebase initialise');
   } catch (e) {
-    console.warn('⚠ Firebase non disponible, mode démo activé', e);
+    console.warn('Firebase non disponible, mode demo active', e);
   }
 }
