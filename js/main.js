@@ -116,9 +116,13 @@ const Cart = {
       return;
     }
 
-    container.innerHTML = this.items.map(item => `
+    container.innerHTML = this.items.map(item => {
+      const coverStyle = item.cover && item.cover.imageUrl
+        ? `background: url('${item.cover.imageUrl}') center/cover no-repeat;`
+        : `background: ${item.cover && item.cover.gradient ? item.cover.gradient : '#6b2737'};`;
+      return `
       <div class="cart-item">
-        <div class="cart-item-cover" style="background: ${item.cover.gradient};"></div>
+        <div class="cart-item-cover" style="${coverStyle}"></div>
         <div class="cart-item-info">
           <h4>${escapeHtml(item.title)}</h4>
           <p>${escapeHtml(item.author)} · ${escapeHtml(item.language || '')}</p>
@@ -133,7 +137,8 @@ const Cart = {
           <button class="cart-remove" onclick="Cart.remove('${item.key}')">${i18n.t('cart.remove')}</button>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     if (totalEl) totalEl.textContent = formatPrice(this.getTotal());
     if (checkoutBtn) checkoutBtn.disabled = false;
@@ -279,15 +284,24 @@ async function renderBooks(filter = 'Tous') {
       return `<span class="lang-pill ${lc === lang ? 'lang-pill--active' : ''}" title="${langInfo.nativeName}">${langInfo.flag}</span>`;
     }).join('');
 
-    return `
-      <a href="pages/livre.html?id=${book.id}" class="book-card ${!book.isAvailableInCurrentLang ? 'book-card--dimmed' : ''}">
-        <div class="book-cover" style="background: ${book.cover.gradient};">
+    const hasImage = book.cover && book.cover.imageUrl;
+    const coverStyle = hasImage
+      ? `background: url('${book.cover.imageUrl}') center/cover no-repeat;`
+      : `background: ${book.cover && book.cover.gradient ? book.cover.gradient : '#6b2737'};`;
+    const coverInner = hasImage
+      ? `${unavailableBadge}`
+      : `
           <div class="book-cover-inner" style="color: ${book.cover.titleColor};">
             <div class="book-cover-author" style="color: ${book.cover.titleColor}; opacity: 0.85;">${escapeHtml(book.author)}</div>
             <div class="book-cover-decoration"></div>
             <div class="book-cover-title">${escapeHtml(book.title)}</div>
           </div>
-          ${unavailableBadge}
+          ${unavailableBadge}`;
+
+    return `
+      <a href="pages/livre.html?id=${book.id}" class="book-card ${!book.isAvailableInCurrentLang ? 'book-card--dimmed' : ''}">
+        <div class="book-cover" style="${coverStyle}">
+          ${coverInner}
         </div>
         <div class="book-info">
           <div class="book-category">${i18n.t('category.' + book.category, book.category)}</div>
@@ -398,13 +412,17 @@ async function renderProductPage() {
 
     <div class="product-grid">
       <div class="product-cover-wrap">
-        <div class="product-cover" style="background: ${book.cover.gradient};">
+        ${book.cover && book.cover.imageUrl ? `
+        <div class="product-cover" style="background: url('${book.cover.imageUrl}') center/cover no-repeat;"></div>
+        ` : `
+        <div class="product-cover" style="background: ${book.cover && book.cover.gradient ? book.cover.gradient : '#6b2737'};">
           <div class="book-cover-inner" style="color: ${book.cover.titleColor};">
             <div class="book-cover-author" style="color: ${book.cover.titleColor}; opacity: 0.85;">${escapeHtml(book.author)}</div>
             <div class="book-cover-decoration"></div>
             <div class="book-cover-title" style="font-size: 1.8rem;">${escapeHtml(book.title)}</div>
           </div>
         </div>
+        `}
       </div>
 
       <div class="product-info">
@@ -479,3 +497,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') closeCart();
   });
 });
+
