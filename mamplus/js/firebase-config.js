@@ -13,13 +13,7 @@
 
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyC6zTeljJfWQxO7ap_kNgwDnNQQR1LM_F8",
-  authDomain: "mampluslibraries.firebaseapp.com",
-  projectId: "mampluslibraries",
-  storageBucket: "mampluslibraries.firebasestorage.app",
-  messagingSenderId: "54713670528",
-  appId: "1:54713670528:web:780c316c38937c646d7f65",
-  measurementId: "G-6X85K09P9S"
+  
 };
 
 // Mode démo : si Firebase n'est pas configuré, on utilise le localStorage
