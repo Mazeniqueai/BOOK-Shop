@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAM++</title>
+  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <nav class="nav">
+      <a href="../index.html" class="logo" aria-label="MAM++">
+        <img src="../images/logo.svg" alt="MAM++" class="logo-img" />
+      </a>
+
+      <div style="display: flex; gap: 0.6rem; align-items: center;">
+        <div class="lang-selector"></div>
+        <span style="font-size: 0.85rem; color: var(--gray);" data-i18n="checkout.secure">🔒 Paiement sécurisé</span>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="checkout-page">
+      <nav class="breadcrumb">
+        <a href="../index.html" data-i18n="nav.catalog">Accueil</a>
+        <span>›</span>
+        <span data-i18n="checkout.breadcrumb">Paiement</span>
+      </nav>
+
+      <h1 style="font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 400; letter-spacing: -0.02em; margin-bottom: 2.5rem;">
+        <span data-i18n="checkout.title">Finaliser votre</span>
+        <em style="font-style: italic; color: var(--burgundy);" data-i18n="checkout.title_em">commande</em>
+      </h1>
+
+      <div class="checkout-grid" id="checkout-grid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-bottom" style="border: none; padding-top: 0;">
+      <div data-i18n="footer.copyright">© 2026 MAM++.</div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/books-service.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/checkout.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAM++</title>
+  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <nav class="nav">
+      <a href="../index.html" class="logo">
+        <img src="../images/logo.svg" alt="MAM++" class="logo-img" />
+      </a>
+      <div class="lang-selector"></div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="confirmation-page" id="confirmation-content">
+      <div class="confirmation-icon">✓</div>
+      <h1>
+        <span data-i18n="confirmation.thanks">Merci pour votre</span>
+        <em data-i18n="confirmation.thanks_em">commande</em> !
+      </h1>
+      <p id="confirmation-message" data-i18n="confirmation.received">Votre paiement a bien été reçu.</p>
+      <div class="order-number" id="order-number">MAM-12345678</div>
+      <p data-i18n="confirmation.email_sent">Un email de confirmation vous a été envoyé à :</p>
+      <p style="font-weight: 600; color: var(--ink); margin-bottom: 2rem;" id="confirmation-email">vous@email.com</p>
+
+      <div id="confirmation-items" style="text-align: left; max-width: 400px; margin: 2rem auto; padding: 1.5rem; background: var(--cream); border-radius: 12px;"></div>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+        <a href="../index.html" class="btn-primary" data-i18n="confirmation.back" style="text-decoration: none;">Retour</a>
+        <a href="#" onclick="window.print(); return false;" class="btn-secondary" data-i18n="confirmation.print">Imprimer</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-bottom" style="border: none; padding-top: 0;">
+      <div data-i18n="footer.copyright">© 2026 MAM++.</div>
+    </div>
+  </footer>
+
+  <script src="../js/i18n.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      i18n.applyTranslations();
+
+      // Build language selector (utilise main.js logic - on duplique ici simplement)
+      const containers = document.querySelectorAll('.lang-selector');
+      containers.forEach(c => {
+        const cur = SUPPORTED_LANGUAGES[i18n.currentLang];
+        c.innerHTML = `
+          <button class="lang-btn" onclick="this.nextElementSibling.classList.toggle('open')" aria-label="Lang">
+            <span class="lang-flag">${cur.flag}</span>
+            <span class="lang-code">${cur.code.toUpperCase()}</span>
+            <span class="lang-arrow">▾</span>
+          </button>
+          <div class="lang-dropdown">
+            ${Object.values(SUPPORTED_LANGUAGES).map(l => `
+              <button class="lang-option ${l.code === i18n.currentLang ? 'active' : ''}" onclick="i18n.setLanguage('${l.code}'); location.reload();">
+                <span class="lang-flag">${l.flag}</span>
+                <span class="lang-name">${l.nativeName}</span>
+                ${l.code === i18n.currentLang ? '<span class="lang-check">✓</span>' : ''}
+              </button>
+            `).join('')}
+          </div>
+        `;
+      });
+
+      const order = JSON.parse(localStorage.getItem('lastOrder') || 'null');
+
+      if (!order) {
+        document.getElementById('confirmation-content').innerHTML = `
+          <h1 style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 1rem;">${i18n.t('product.not_found')}</h1>
+          <a href="../index.html" class="btn-primary" style="text-decoration: none;">${i18n.t('confirmation.back')}</a>
+        `;
+        return;
+      }
+
+      document.getElementById('order-number').textContent = order.orderNumber;
+      document.getElementById('confirmation-email').textContent = order.customer.email;
+
+      const itemsHtml = order.items.map(item => `
+        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.9rem;">
+          <span><strong>${item.title}</strong> · ${item.language || ''} × ${item.quantity}</span>
+          <span style="font-weight: 600; color: var(--burgundy);">${(item.price * item.quantity).toFixed(2)} €</span>
+        </div>
+      `).join('');
+
+      document.getElementById('confirmation-items').innerHTML = `
+        ${itemsHtml}
+        <div style="display: flex; justify-content: space-between; padding-top: 1rem; margin-top: 0.5rem; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600;">
+          <span>${i18n.t('cart.total')}</span>
+          <span style="color: var(--burgundy);">${order.total.toFixed(2)} €</span>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
