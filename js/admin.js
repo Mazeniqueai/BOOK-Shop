@@ -139,6 +139,10 @@ function openAddBookModal() {
   setColorValue('cover-color-2', '#2c1015');
   setColorValue('cover-title-color', '#e8d5a3');
 
+  // Vider le champ image de couverture
+  const coverImageInput = document.getElementById('cover-image-url');
+  if (coverImageInput) coverImageInput.value = '';
+
   // Vider les champs de lien PDF
   ['fr', 'en', 'es'].forEach(lc => {
     const linkInput = document.getElementById('pdf-link-' + lc);
@@ -176,6 +180,10 @@ async function openEditBookModal(bookId) {
   setColorValue('cover-color-1', colors[0] || '#6b2737');
   setColorValue('cover-color-2', colors[1] || '#2c1015');
   setColorValue('cover-title-color', book.cover?.titleColor || '#e8d5a3');
+
+  // Pré-remplir le champ image de couverture avec l'URL existante
+  const coverImageInput = document.getElementById('cover-image-url');
+  if (coverImageInput) coverImageInput.value = book.cover?.imageUrl || '';
 
   // Remplir les traductions
   ['fr', 'en', 'es'].forEach(lc => {
@@ -337,16 +345,33 @@ async function saveBook() {
     const color1 = document.getElementById('cover-color-1').value;
     const color2 = document.getElementById('cover-color-2').value;
 
+    // Récupérer le lien de l'image de couverture
+    const coverImageInput = document.getElementById('cover-image-url');
+    const coverImageUrl = coverImageInput ? coverImageInput.value.trim() : '';
+
+    // Validation du lien d'image (si fourni)
+    if (coverImageUrl && !/^https?:\/\//i.test(coverImageUrl)) {
+      alert('⚠ Le lien de l\'image de couverture doit commencer par http:// ou https://');
+      btn.disabled = false; btn.textContent = originalText; return;
+    }
+
+    const coverData = {
+      gradient: `linear-gradient(135deg, ${color1}, ${color2})`,
+      titleColor: document.getElementById('cover-title-color').value
+    };
+
+    // Si une image est fournie, l'ajouter
+    if (coverImageUrl) {
+      coverData.imageUrl = coverImageUrl;
+    }
+
     const bookData = {
       category,
       price,
       currency: 'EUR',
       pages: parseInt(document.getElementById('book-pages').value) || 0,
       publishDate: document.getElementById('book-publish-date').value.trim() || new Date().getFullYear().toString(),
-      cover: {
-        gradient: `linear-gradient(135deg, ${color1}, ${color2})`,
-        titleColor: document.getElementById('cover-title-color').value
-      },
+      cover: coverData,
       translations
     };
 
@@ -464,14 +489,31 @@ function updatePreview() {
   const color2 = document.getElementById('cover-color-2').value;
   const titleColor = document.getElementById('cover-title-color').value;
 
-  const preview = document.getElementById('cover-preview');
-  if (preview) {
-    preview.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
-    preview.style.color = titleColor;
-  }
+  // Vérifier s'il y a une image de couverture
+  const imageInput = document.getElementById('cover-image-url');
+  const imageUrl = imageInput ? imageInput.value.trim() : '';
 
+  const preview = document.getElementById('cover-preview');
   const titleEl = document.getElementById('preview-title');
   const authorEl = document.getElementById('preview-author');
+
+  if (preview) {
+    if (imageUrl && /^https?:\/\//i.test(imageUrl)) {
+      // Mode image : afficher l'image de couverture
+      preview.style.background = `url('${imageUrl}') center/cover no-repeat`;
+      preview.style.color = 'transparent';
+      // Cacher le titre/auteur quand on a une vraie image
+      if (titleEl) titleEl.style.display = 'none';
+      if (authorEl) authorEl.style.display = 'none';
+    } else {
+      // Mode dégradé : couleurs personnalisées
+      preview.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+      preview.style.color = titleColor;
+      if (titleEl) titleEl.style.display = '';
+      if (authorEl) authorEl.style.display = '';
+    }
+  }
+
   if (titleEl) titleEl.textContent = title;
   if (authorEl) authorEl.textContent = author;
 }
@@ -540,3 +582,4 @@ document.addEventListener('click', (e) => {
   if (e.target.id === 'book-modal') closeBookModal();
   if (e.target.id === 'delete-modal') closeDeleteModal();
 });
+
