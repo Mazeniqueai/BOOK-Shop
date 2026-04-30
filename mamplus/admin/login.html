@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion Admin — MAM++</title>
+  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="../images/logo.svg" alt="MAM++" />
+      </div>
+
+      <h1 class="auth-title">Espace <em>Administrateur</em></h1>
+      <p class="auth-subtitle">Connectez-vous pour gérer votre librairie</p>
+
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required autocomplete="email" placeholder="admin@mamplus.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••" />
+        </div>
+
+        <div id="login-error" class="auth-error" style="display: none;"></div>
+
+        <button type="submit" class="btn-primary btn-full" id="login-btn">
+          Se connecter
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <a href="../index.html">← Retour à la librairie</a>
+      </div>
+
+      <div class="demo-credentials" id="demo-credentials" style="display: none;">
+        <strong>Mode démo — Identifiants de test :</strong>
+        <div class="demo-account">
+          <span>👑 Super Admin :</span>
+          <code>admin@mamplus.com / admin123</code>
+        </div>
+        <div class="demo-account">
+          <span>👤 Manager :</span>
+          <code>manager@mamplus.com / manager123</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK (chargé en CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+  <!-- Notre code -->
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/auth.js"></script>
+
+  <script>
+    // Si déjà connecté, rediriger vers le dashboard
+    AuthService.onAuthChange((user) => {
+      if (user) {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    // Afficher les identifiants de démo si Firebase n'est pas configuré
+    if (!USE_FIREBASE) {
+      document.getElementById('demo-credentials').style.display = 'block';
+    }
+
+    // Gestion du formulaire
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorEl = document.getElementById('login-error');
+      const btn = document.getElementById('login-btn');
+
+      errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Connexion...';
+
+      const result = await AuthService.login(email, password);
+
+      if (result.success) {
+        btn.textContent = '✓ Connecté';
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 500);
+      } else {
+        errorEl.textContent = '⚠ ' + result.error;
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Se connecter';
+      }
+    });
+  </script>
+</body>
+</html>
